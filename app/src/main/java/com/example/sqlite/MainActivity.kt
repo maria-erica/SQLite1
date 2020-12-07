@@ -15,9 +15,9 @@ import com.google.android.material.snackbar.Snackbar
 
 
 class MainActivity : AppCompatActivity() {
-    var queuedList = arrayListOf<stringArray>()
-    var list = mutableListOf<stringArray>()
-    val dbHandler = songTableHandler(this)
+    var queuedList = arrayListOf<StringArray>()
+    var list = mutableListOf<StringArray>()
+    val dbHandler = SongTableHandler(this)
     lateinit var songTitle : String
     lateinit var artistName : String
     lateinit var albumTitle : String
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setTitle("UIElement_HOME")
+        setTitle("SQLite")
         list = dbHandler.readAll()
         songListView = findViewById<ListView>(R.id.song_list)
         adapter = listAdapter(this,R.layout.main_row, list)
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                     else if (albumTitle.isEmpty() == true){
                         albumTitle = "Unknown"
                     }
-                    val albumObject= stringArray(songName = albumTitle,artistName = artistName, albumName = albumTitle)
+                    val albumObject= StringArray(songName = albumTitle,artistName = artistName, albumName = albumTitle)
                     dbHandler.create(albumObject)
                 })
         adapter.notifyDataSetChanged()
@@ -109,10 +109,10 @@ class MainActivity : AppCompatActivity() {
         songTitle = list[songPosition].songName
         artistName = list[songPosition].artistName
         albumTitle = list[songPosition].albumName
-        val song = stringArray(songId,songName = songTitle,artistName = artistName,albumName = albumTitle)
+        val song = StringArray(songId,songName = songTitle,artistName = artistName,albumName = albumTitle)
         return when(item.itemId){
             R.id.add_queue -> {
-                val dbqueueHandler = queueTableHandler(this)
+                val dbqueueHandler = QueueTableHandler(this)
                 dbqueueHandler.create(song)
                 val  snack = Snackbar.make(findViewById(R.id.coordinatorLayoutroot), "Add to QUEUE", Snackbar.LENGTH_LONG)
                         .setAction("View",View.OnClickListener {
@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
                         })
                         .setPositiveButton("Yes", DialogInterface.OnClickListener{
                             dialogInterface, i ->
-                            val albumObject= stringArray(songId, songTitle, artistName,albumTitle)
+                            val albumObject= StringArray(songId, songTitle, artistName,albumTitle)
                             dbHandler.delete(albumObject)
                         })
                 dialogBuilder.show()
@@ -166,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                             else if(artistName.isEmpty() == true){
                                 artistName = "Unknown"
                             }
-                            val albumObject= stringArray(songId,songTitle,artistName,albumTitle)
+                            val albumObject= StringArray(songId,songTitle,artistName,albumTitle)
                             dbHandler.update(albumObject)
                         })
                 dialogBuilder.show()
